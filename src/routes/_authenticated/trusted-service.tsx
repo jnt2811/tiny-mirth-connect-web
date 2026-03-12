@@ -156,9 +156,10 @@ function TrustedServicePage() {
               <Group gap="xs" wrap="nowrap">
                 <Switch
                   checked={row.STATUS === 1}
-                  onChange={(e) =>
-                    statusMutation.mutate({ ID: row.ID, STATUS: e.currentTarget.checked ? 1 : 0 })
-                  }
+                  onChange={(e) => {
+                    const checked = e.currentTarget.checked
+                    statusMutation.mutate({ ID: row.ID, STATUS: checked ? 1 : 0 })
+                  }}
                 />
                 <ActionIcon variant="subtle" onClick={() => openEdit(row)}>
                   <IconPencil size={16} />
