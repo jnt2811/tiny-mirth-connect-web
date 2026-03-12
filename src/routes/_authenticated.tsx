@@ -1,27 +1,23 @@
 import { AppShell } from '@mantine/core';
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { getCurrentUser } from '@/lib/api/auth';
+import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { AppHeader } from '@/components/AppHeader';
-import { queryClient } from '@/lib/queryClient';
+import { useCurrentUser } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async () => {
-    if (typeof window === 'undefined') return; // skip auth check on SSR, client will handle
-    try {
-      await queryClient.ensureQueryData({
-        queryKey: ['current-user'],
-        queryFn: getCurrentUser,
-        staleTime: Infinity, // chỉ fetch 1 lần, logout sẽ clear cache
-      });
-    } catch {
-      queryClient.removeQueries({ queryKey: ['current-user'] });
-      throw redirect({ to: '/login' });
-    }
-  },
   component: AuthenticatedLayout,
 });
 
 function AuthenticatedLayout() {
+  const navigate = useNavigate();
+  const { isError } = useCurrentUser();
+
+  useEffect(() => {
+    if (isError) {
+      void navigate({ to: '/login' });
+    }
+  }, [isError, navigate]);
+
   return (
     <AppShell header={{ height: 60 }} padding="md">
       <AppShell.Header>
