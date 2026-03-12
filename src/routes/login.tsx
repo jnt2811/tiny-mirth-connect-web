@@ -1,6 +1,6 @@
-import { notifications } from '@mantine/notifications';
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
-import { useState } from 'react';
+import { notifications } from "@mantine/notifications";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Anchor,
   Box,
@@ -11,35 +11,35 @@ import {
   Text,
   TextInput,
   Title,
-} from '@mantine/core';
-import { useLogin } from '@/hooks/useAuth';
-import type { LoginStatus } from '@/types/auth';
+} from "@mantine/core";
+import { useLogin } from "@/hooks/useAuth";
+import type { LoginStatus } from "@/types/auth";
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute("/login")({
   beforeLoad: ({ context }) => {
     // Nếu đã auth rồi thì redirect về dashboard
     const ctx = context as { isAuthenticated?: boolean };
     if (ctx.isAuthenticated) {
-      throw redirect({ to: '/dashboard' });
+      throw redirect({ to: "/dashboard" });
     }
   },
   component: LoginPage,
 });
 
-const errorMessages: Record<LoginStatus['status'], string> = {
-  SUCCESS: '',
-  SUCCESS_GRACE_PERIOD: '',
-  FAIL: 'Tên đăng nhập hoặc mật khẩu không đúng.',
-  FAIL_EXPIRED: 'Mật khẩu đã hết hạn. Vui lòng liên hệ quản trị viên.',
-  FAIL_LOCKED_OUT: 'Tài khoản bị khóa. Vui lòng liên hệ quản trị viên.',
-  FAIL_VERSION_MISMATCH: 'Phiên bản không tương thích.',
+const errorMessages: Record<LoginStatus["status"], string> = {
+  SUCCESS: "",
+  SUCCESS_GRACE_PERIOD: "",
+  FAIL: "Tên đăng nhập hoặc mật khẩu không đúng.",
+  FAIL_EXPIRED: "Mật khẩu đã hết hạn. Vui lòng liên hệ quản trị viên.",
+  FAIL_LOCKED_OUT: "Tài khoản bị khóa. Vui lòng liên hệ quản trị viên.",
+  FAIL_VERSION_MISMATCH: "Phiên bản không tương thích.",
 };
 
 function LoginPage() {
   const router = useRouter();
   const login = useLogin();
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,26 +47,29 @@ function LoginPage() {
       { username, password },
       {
         onSuccess: (data) => {
-          if (data.status === 'SUCCESS' || data.status === 'SUCCESS_GRACE_PERIOD') {
+          if (
+            data.status === "SUCCESS" ||
+            data.status === "SUCCESS_GRACE_PERIOD"
+          ) {
             notifications.show({
-              title: 'Đăng nhập thành công',
+              title: "Đăng nhập thành công",
               message: `Chào mừng, ${data.updatedUsername ?? username}!`,
-              color: 'green',
+              color: "green",
             });
-            void router.navigate({ to: '/dashboard' });
+            void router.navigate({ to: "/dashboard" });
           } else {
             notifications.show({
-              title: 'Đăng nhập thất bại',
-              message: errorMessages[data.status] ?? 'Đã có lỗi xảy ra.',
-              color: 'red',
+              title: "Đăng nhập thất bại",
+              message: errorMessages[data.status] ?? "Đã có lỗi xảy ra.",
+              color: "red",
             });
           }
         },
         onError: () => {
           notifications.show({
-            title: 'Lỗi kết nối',
-            message: 'Không thể kết nối tới server. Vui lòng thử lại.',
-            color: 'red',
+            title: "Lỗi kết nối",
+            message: "Không thể kết nối tới server. Vui lòng thử lại.",
+            color: "red",
           });
         },
       },
@@ -108,7 +111,11 @@ function LoginPage() {
         </Paper>
 
         <Text ta="center" mt="md" size="xs" c="dimmed">
-          <Anchor href="https://www.nextgen.com/solutions/nextgen-mirth-connect" target="_blank" size="xs">
+          <Anchor
+            href="https://www.nextgen.com/solutions/nextgen-mirth-connect"
+            target="_blank"
+            size="xs"
+          >
             NextGen Mirth Connect
           </Anchor>
         </Text>
