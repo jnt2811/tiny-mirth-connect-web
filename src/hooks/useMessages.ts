@@ -1,8 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import type { FetchMessagesParams } from '@/lib/api/channels';
-import { fetchMessageCount, fetchMessages } from '@/lib/api/channels';
+import { useQuery } from "@tanstack/react-query";
+import type { FetchMessagesParams } from "@/lib/api/channels";
+import { fetchMessageCount, fetchMessages } from "@/lib/api/channels";
 
-export type MessageQueryFilter = Omit<FetchMessagesParams, 'channelId' | 'offset' | 'includeContent'>;
+export type MessageQueryFilter = Omit<
+  FetchMessagesParams,
+  "channelId" | "offset" | "includeContent"
+>;
 
 export function useChannelMessages(
   channelId: string | null,
@@ -10,7 +13,7 @@ export function useChannelMessages(
   offset: number,
 ) {
   return useQuery({
-    queryKey: ['messages', channelId, filter, offset],
+    queryKey: ["messages", channelId, filter, offset],
     queryFn: () =>
       fetchMessages({
         channelId: channelId!,
@@ -22,13 +25,16 @@ export function useChannelMessages(
         textSearch: filter.textSearch,
       }),
     enabled: Boolean(channelId),
-    staleTime: 10_000,
+    staleTime: 0,
   });
 }
 
-export function useMessageCount(channelId: string | null, filter: Omit<MessageQueryFilter, 'limit'>) {
+export function useMessageCount(
+  channelId: string | null,
+  filter: Omit<MessageQueryFilter, "limit">,
+) {
   return useQuery({
-    queryKey: ['message-count', channelId, filter],
+    queryKey: ["message-count", channelId, filter],
     queryFn: () =>
       fetchMessageCount({
         channelId: channelId!,
@@ -38,6 +44,6 @@ export function useMessageCount(channelId: string | null, filter: Omit<MessageQu
         textSearch: filter.textSearch,
       }),
     enabled: Boolean(channelId),
-    staleTime: 10_000,
+    staleTime: 0,
   });
 }

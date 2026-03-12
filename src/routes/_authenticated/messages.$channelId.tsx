@@ -573,7 +573,10 @@ function MessagesPage() {
               placeholder="Nội dung message..."
               leftSection={<IconSearch size={14} />}
               value={draft.textSearch ?? ''}
-              onChange={(e) => setDraft((d) => ({ ...d, textSearch: e.currentTarget.value }))}
+              onChange={(e) => {
+                const value = e.currentTarget.value;
+                setDraft((d) => ({ ...d, textSearch: value }));
+              }}
               w={240}
             />
             <MultiSelect
@@ -588,7 +591,7 @@ function MessagesPage() {
             <DatePickerInput
               label="Từ ngày"
               placeholder="Chọn ngày..."
-              value={draft.startDate ? new Date(draft.startDate) : null}
+              value={draft.startDate ?? null}
               onChange={(d) => setDraft((prev) => ({ ...prev, startDate: d ?? undefined }))}
               clearable
               w={160}
@@ -604,10 +607,15 @@ function MessagesPage() {
             <NumberInput
               label="Limit"
               value={draft.limit ?? 50}
-              onChange={(v) => setDraft((d) => ({ ...d, limit: Number(v) || 50 }))}
-              min={10}
+              onChange={(v) => {
+                const n = typeof v === 'number' ? v : Number(v);
+                const clamped = isNaN(n) || n < 1 ? 1 : Math.round(n);
+                setDraft((d) => ({ ...d, limit: clamped }));
+              }}
+              min={1}
               max={1000}
-              step={50}
+              step={1}
+              allowDecimal={false}
               w={100}
             />
             <Group gap="xs" style={{ alignSelf: 'flex-end' }}>
