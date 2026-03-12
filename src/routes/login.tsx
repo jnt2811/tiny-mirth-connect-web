@@ -1,6 +1,6 @@
 import { notifications } from "@mantine/notifications";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   Anchor,
   Box,
@@ -12,17 +12,10 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useLogin } from "@/hooks/useAuth";
+import { useCurrentUser, useLogin } from "@/hooks/useAuth";
 import type { LoginStatus } from "@/types/auth";
 
 export const Route = createFileRoute("/login")({
-  beforeLoad: ({ context }) => {
-    // Nếu đã auth rồi thì redirect về dashboard
-    const ctx = context as { isAuthenticated?: boolean };
-    if (ctx.isAuthenticated) {
-      throw redirect({ to: "/dashboard" });
-    }
-  },
   component: LoginPage,
 });
 
@@ -37,9 +30,17 @@ const errorMessages: Record<LoginStatus["status"], string> = {
 
 function LoginPage() {
   const router = useRouter();
+  const navigate = useNavigate();
   const login = useLogin();
+  const { data: currentUser } = useCurrentUser();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (currentUser) {
+      void navigate({ to: "/dashboard" });
+    }
+  }, [currentUser, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

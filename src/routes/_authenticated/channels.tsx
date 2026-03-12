@@ -144,7 +144,7 @@ function ChannelDetailModal({ channel, opened, onClose }: {
               {Object.entries(channel.properties).map(([k, v]) => (
                 <Table.Tr key={k}>
                   <Table.Td><Code>{k}</Code></Table.Td>
-                  <Table.Td><Text size="sm">{String(v)}</Text></Table.Td>
+                  <Table.Td><Text size="sm">{typeof v === 'object' ? JSON.stringify(v) : String(v ?? '')}</Text></Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>
@@ -196,7 +196,7 @@ function ConnectorDetail({ connector, compact }: { connector: Connector; compact
                   <Table.Tr key={k}>
                     <Table.Td w={200}><Code fz="xs">{k}</Code></Table.Td>
                     <Table.Td>
-                      <Text size="xs" truncate="end" maw={300}>
+                      <Text size="xs" style={{ wordBreak: 'break-all' }}>
                         {typeof v === 'object' ? JSON.stringify(v) : String(v ?? '')}
                       </Text>
                     </Table.Td>
