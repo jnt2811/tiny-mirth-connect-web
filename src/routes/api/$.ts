@@ -25,10 +25,26 @@ async function proxyToMirth(request: Request): Promise<Response> {
     dispatcher: agent,
   });
 
+  const responseHeaders = new Headers(response.headers);
+
+  // Rewrite Set-Cookie headers: strip Secure flag and Domain attribute so the
+  // browser stores cookies for the proxy host instead of the Mirth host.
+  // Without this, browsers reject Secure cookies over plain HTTP (non-localhost).
+  const rawCookies = response.headers.getSetCookie?.() ?? [];
+  if (rawCookies.length > 0) {
+    responseHeaders.delete('set-cookie');
+    for (const cookie of rawCookies) {
+      const rewritten = cookie
+        .replace(/;\s*Secure/gi, '')
+        .replace(/;\s*Domain=[^;]*/gi, '');
+      responseHeaders.append('set-cookie', rewritten);
+    }
+  }
+
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers: response.headers,
+    headers: responseHeaders,
   });
 }
 
