@@ -186,8 +186,8 @@ export async function fetchMessages(params: FetchMessagesParams): Promise<Messag
   const { channelId, offset = 0, limit = 20, statuses, startDate, endDate, textSearch, includeContent = false } = params;
   const queryParams: Record<string, unknown> = { offset, limit, includeContent };
   if (statuses?.length) queryParams['status'] = statuses;
-  if (startDate) queryParams['startDate'] = new Date(startDate).getTime();
-  if (endDate) queryParams['endDate'] = new Date(endDate).getTime();
+  if (startDate) queryParams['startDate'] = new Date(startDate).toISOString();
+  if (endDate) queryParams['endDate'] = new Date(endDate).toISOString();
   if (textSearch) queryParams['textSearch'] = textSearch;
 
   const res = await api.get(`/channels/${channelId}/messages`, { params: queryParams });
@@ -206,8 +206,8 @@ export async function fetchMessageCount(params: Omit<FetchMessagesParams, 'offse
   const { channelId, statuses, startDate, endDate, textSearch } = params;
   const queryParams: Record<string, unknown> = {};
   if (statuses?.length) queryParams['status'] = statuses;
-  if (startDate) queryParams['startDate'] = new Date(startDate).getTime();
-  if (endDate) queryParams['endDate'] = new Date(endDate).getTime();
+  if (startDate) queryParams['startDate'] = new Date(startDate).toISOString();
+  if (endDate) queryParams['endDate'] = new Date(endDate).toISOString();
   if (textSearch) queryParams['textSearch'] = textSearch;
 
   const res = await api.get(`/channels/${channelId}/messages/count`, { params: queryParams });

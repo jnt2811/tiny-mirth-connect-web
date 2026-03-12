@@ -616,6 +616,8 @@ function MessagesPage() {
               max={1000}
               step={1}
               allowDecimal={false}
+              allowNegative={false}
+              clampBehavior="strict"
               w={100}
             />
             <Group gap="xs" style={{ alignSelf: 'flex-end' }}>
