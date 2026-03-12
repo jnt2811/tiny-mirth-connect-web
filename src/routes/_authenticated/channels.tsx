@@ -11,7 +11,6 @@ import {
   Modal,
   ScrollArea,
   SegmentedControl,
-  SimpleGrid,
   Skeleton,
   Stack,
   Table,

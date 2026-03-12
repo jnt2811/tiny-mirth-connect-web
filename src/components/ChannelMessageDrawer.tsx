@@ -84,13 +84,9 @@ export function ChannelMessageDrawer({ channel, opened, onClose }: Props) {
   const [selectedStatuses, setSelectedStatuses] = useState<MessageStatus[]>([]);
 
   const channelId = channel?.channelId ?? null;
-  const { data: messages, isLoading } = useChannelMessages(
-    channelId,
-    page,
-    PAGE_SIZE,
-    selectedStatuses.length ? selectedStatuses : undefined,
-  );
-  const { data: totalCount } = useMessageCount(channelId);
+  const filter = { limit: PAGE_SIZE, statuses: selectedStatuses.length ? selectedStatuses : undefined };
+  const { data: messages, isLoading } = useChannelMessages(channelId, filter, page);
+  const { data: totalCount } = useMessageCount(channelId, {});
 
   const totalPages = Math.ceil((totalCount ?? 0) / PAGE_SIZE);
 

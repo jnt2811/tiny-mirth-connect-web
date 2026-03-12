@@ -60,7 +60,6 @@ const STATUS_COLORS: Record<MessageStatus, string> = {
   PENDING: 'orange',
 };
 
-const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
 const ROW_HEIGHT = 34;
 const PARENT_ROW_HEIGHT = 38;
 
@@ -81,7 +80,7 @@ function formatDate(d: string | undefined): string {
       day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
       fractionalSecondDigits: 3,
-    });
+    } as Intl.DateTimeFormatOptions);
   } catch { return d; }
 }
 
@@ -590,15 +589,15 @@ function MessagesPage() {
               label="Từ ngày"
               placeholder="Chọn ngày..."
               value={draft.startDate ? new Date(draft.startDate) : null}
-              onChange={(d) => setDraft((prev) => ({ ...prev, startDate: d ? d.toISOString() : undefined }))}
+              onChange={(d) => setDraft((prev) => ({ ...prev, startDate: d ?? undefined }))}
               clearable
               w={160}
             />
             <DatePickerInput
               label="Đến ngày"
               placeholder="Chọn ngày..."
-              value={draft.endDate ? new Date(draft.endDate) : null}
-              onChange={(d) => setDraft((prev) => ({ ...prev, endDate: d ? d.toISOString() : undefined }))}
+              value={draft.endDate ?? null}
+              onChange={(d) => setDraft((prev) => ({ ...prev, endDate: d ?? undefined }))}
               clearable
               w={160}
             />
