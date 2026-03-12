@@ -5,6 +5,7 @@ import { AppHeader } from '@/components/AppHeader';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async () => {
+    if (typeof window === 'undefined') return; // skip auth check on SSR, client will handle
     try {
       await getCurrentUser();
     } catch {
