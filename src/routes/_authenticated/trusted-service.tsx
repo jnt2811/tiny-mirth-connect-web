@@ -194,7 +194,10 @@ function TrustedServicePage() {
           <Switch
             label="Trạng thái"
             checked={form.STATUS === 1}
-            onChange={(e) => setForm((f) => ({ ...f, STATUS: e.currentTarget.checked ? 1 : 0 }))}
+            onChange={(e) => {
+              const checked = e.currentTarget.checked
+              setForm((f) => ({ ...f, STATUS: checked ? 1 : 0 }))
+            }}
           />
           <TextInput label="Service secret" value="1" readOnly />
           <Group justify="flex-end" mt="sm">
