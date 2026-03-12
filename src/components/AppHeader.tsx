@@ -21,6 +21,7 @@ import {
   IconDashboard,
   IconLogout,
   IconMoon,
+  IconShieldCheck,
   IconSun,
   IconUser,
 } from '@tabler/icons-react';
@@ -30,6 +31,7 @@ import { useLogout } from '@/hooks/useAuth';
 const navItems = [
   { to: '/dashboard', label: 'Bảng điều khiển', icon: <IconDashboard size={18} /> },
   { to: '/channels', label: 'Kênh', icon: <IconArrowsExchange size={18} /> },
+  { to: '/trusted-service', label: 'Dịch vụ tin cậy', icon: <IconShieldCheck size={18} /> },
 ] as const;
 
 export function AppHeader() {

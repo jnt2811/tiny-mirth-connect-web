@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTrustedServiceRouteImport } from './routes/_authenticated/trusted-service'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChannelsRouteImport } from './routes/_authenticated/channels'
 import { Route as AuthenticatedMessagesChannelIdRouteImport } from './routes/_authenticated/messages.$channelId'
@@ -30,6 +31,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTrustedServiceRoute =
+  AuthenticatedTrustedServiceRouteImport.update({
+    id: '/trusted-service',
+    path: '/trusted-service',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -52,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/channels': typeof AuthenticatedChannelsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/trusted-service': typeof AuthenticatedTrustedServiceRoute
   '/messages/$channelId': typeof AuthenticatedMessagesChannelIdRoute
 }
 export interface FileRoutesByTo {
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/channels': typeof AuthenticatedChannelsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/trusted-service': typeof AuthenticatedTrustedServiceRoute
   '/messages/$channelId': typeof AuthenticatedMessagesChannelIdRoute
 }
 export interface FileRoutesById {
@@ -68,6 +77,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/channels': typeof AuthenticatedChannelsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/trusted-service': typeof AuthenticatedTrustedServiceRoute
   '/_authenticated/messages/$channelId': typeof AuthenticatedMessagesChannelIdRoute
 }
 export interface FileRouteTypes {
@@ -77,9 +87,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/channels'
     | '/dashboard'
+    | '/trusted-service'
     | '/messages/$channelId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/channels' | '/dashboard' | '/messages/$channelId'
+  to:
+    | '/'
+    | '/login'
+    | '/channels'
+    | '/dashboard'
+    | '/trusted-service'
+    | '/messages/$channelId'
   id:
     | '__root__'
     | '/'
@@ -87,6 +104,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authenticated/channels'
     | '/_authenticated/dashboard'
+    | '/_authenticated/trusted-service'
     | '/_authenticated/messages/$channelId'
   fileRoutesById: FileRoutesById
 }
@@ -119,6 +137,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/trusted-service': {
+      id: '/_authenticated/trusted-service'
+      path: '/trusted-service'
+      fullPath: '/trusted-service'
+      preLoaderRoute: typeof AuthenticatedTrustedServiceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -146,12 +171,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedChannelsRoute: typeof AuthenticatedChannelsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedTrustedServiceRoute: typeof AuthenticatedTrustedServiceRoute
   AuthenticatedMessagesChannelIdRoute: typeof AuthenticatedMessagesChannelIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedChannelsRoute: AuthenticatedChannelsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedTrustedServiceRoute: AuthenticatedTrustedServiceRoute,
   AuthenticatedMessagesChannelIdRoute: AuthenticatedMessagesChannelIdRoute,
 }
 
@@ -167,3 +194,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
