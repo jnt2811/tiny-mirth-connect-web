@@ -498,8 +498,13 @@ function MessagesPage() {
   const [detailConn, setDetailConn] = useState<ConnectorMessage | null>(null);
   const [detailMsg, setDetailMsg] = useState<Message | null>(null);
 
-  const { data: messages, isLoading, isFetching } = useChannelMessages(channelId, appliedFilter, 0);
-  const { data: totalCount } = useMessageCount(channelId, appliedFilter);
+  const { data: messages, isLoading, isFetching, refetch: refetchMessages } = useChannelMessages(channelId, appliedFilter, 0);
+  const { data: totalCount, refetch: refetchCount } = useMessageCount(channelId, appliedFilter);
+
+  const handleRefresh = () => {
+    void refetchMessages();
+    void refetchCount();
+  };
 
   // Flatten rows for virtual table
   const flatRows = useMemo<FlatRow[]>(() => {
@@ -643,6 +648,11 @@ function MessagesPage() {
                   <Text span c="dimmed"> · Hiển thị {messages!.length}</Text>
                 )}
               </Text>
+              <Tooltip label="Làm mới dữ liệu" withArrow>
+                <ActionIcon variant="subtle" size="sm" onClick={handleRefresh} loading={isFetching}>
+                  <IconRefresh size={14} />
+                </ActionIcon>
+              </Tooltip>
             </Group>
             <Group gap="xs">
               <Button variant="subtle" size="xs" onClick={expandAll}>Mở tất cả</Button>
