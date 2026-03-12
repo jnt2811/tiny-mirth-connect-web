@@ -11,6 +11,7 @@ import { queryClient } from '@/lib/queryClient'
 
 export const Route = createRootRoute({
   component: RootLayout,
+  notFoundComponent: () => null,
 })
 
 function RootLayout() {
